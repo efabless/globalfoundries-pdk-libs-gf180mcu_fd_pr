@@ -25,6 +25,8 @@ from .layers_def import layer
 import numpy as np
 import os
 
+from .pcell_utilities import gf_to_pya
+
 
 @gf.cell
 def cap_mos_inst(
@@ -152,6 +154,7 @@ def cap_mos_inst(
     return c_inst
 
 
+@gf.cell
 def draw_cap_mos(
     layout,
     type: str = "cap_nmos",
@@ -173,7 +176,7 @@ def draw_cap_mos(
      w      : Float of diff width
     """
 
-    c = gf.Component("cap_mos_dev")
+    c = gf.Component()
 
     con_size = 0.22
     con_sp = 0.28
@@ -521,8 +524,4 @@ def draw_cap_mos(
             )
         )  # guardring metal1
 
-    c.write_gds("cap_mos_temp.gds")
-    layout.read("cap_mos_temp.gds")
-    os.remove("cap_mos_temp.gds")
-
-    return layout.cell(c.name)
+    return c

@@ -5,6 +5,7 @@ from .layers_def import layer
 import os
 
 
+@gf.cell
 def draw_cap_mim(
     layout,
     mim_option: str = "A",
@@ -14,7 +15,7 @@ def draw_cap_mim(
     lbl: bool = 0,
     top_lbl: str = "",
     bot_lbl: str = "",
-):
+) -> gf.Component:
 
     """
     Retern mim cap
@@ -27,7 +28,7 @@ def draw_cap_mim(
 
     """
 
-    c = gf.Component("mim_cap_dev")
+    c = gf.Component()
 
     # used dimensions and layers
 
@@ -137,8 +138,4 @@ def draw_cap_mim(
     )
     c.add_ref(via)
 
-    c.write_gds("mim_cap_temp.gds")
-    layout.read("mim_cap_temp.gds")
-    os.remove("mim_cap_temp.gds")
-
-    return layout.cell(c.name)
+    return c

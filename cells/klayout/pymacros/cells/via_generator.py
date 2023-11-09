@@ -226,6 +226,7 @@ def via_stack(
     return c
 
 
+@gf.cell
 def draw_via_dev(
     layout,
     x_min: float = 0,
@@ -234,7 +235,7 @@ def draw_via_dev(
     y_max: float = 2,
     metal_level: str = "M1",
     base_layer: str = "comp",
-):
+) -> gf.Component:
 
     """
 
@@ -255,7 +256,7 @@ def draw_via_dev(
 
     """
 
-    c = gf.Component("via_stack_dev")
+    c = gf.Component()
 
     # vias dimensions
     x_range = x_max - x_min
@@ -394,8 +395,4 @@ def draw_via_dev(
         )
         c.add_ref(v5)
 
-    c.write_gds("via_stack_temp.gds")
-    layout.read("via_stack_temp.gds")
-    os.remove("via_stack_temp.gds")
-
-    return layout.cell(c.name)
+    return c

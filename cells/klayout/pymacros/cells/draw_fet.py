@@ -1208,6 +1208,7 @@ def bulk_m1_check(bulk_con_area, m1_area, c_inst, bulk_con):
         bulk_m1.ymin = bulk_con.ymin - (bulk_m1.size[1] - bulk_con.size[1]) / 2
 
 
+@gf.cell
 def draw_nfet(
     layout,
     l_gate: float = 0.28,
@@ -1288,7 +1289,7 @@ def draw_nfet(
     sd_l = sd_l_con
 
     # gds components to store a single instance and the generated device
-    c = gf.Component("nfet_dev")
+    c = gf.Component()
 
     c_inst = gf.Component("dev_temp")
 
@@ -1707,12 +1708,7 @@ def draw_nfet(
             )
         )
 
-    # creating layout and cell in klayout
-    c.write_gds("nfet_temp.gds")
-    layout.read("nfet_temp.gds")
-    os.remove("nfet_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
 @gf.cell
@@ -1819,6 +1815,7 @@ def pfet_deep_nwell(
     return c
 
 
+@gf.cell
 def draw_pfet(
     layout,
     l_gate: float = 0.28,
@@ -1902,7 +1899,7 @@ def draw_pfet(
     sd_l = sd_l_con
 
     # gds components to store a single instance and the generated device
-    c = gf.Component("pfet_dev")
+    c = gf.Component()
 
     c_inst = gf.Component("dev_temp")
 
@@ -2335,15 +2332,10 @@ def draw_pfet(
         )
         # bulk guardring
 
-    # creating layout and cell in klayout
-
-    c.write_gds("pfet_temp.gds")
-    layout.read("pfet_temp.gds")
-    os.remove("pfet_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
+@gf.cell
 def draw_nfet_06v0_nvt(
     layout,
     l_gate: float = 1.8,
@@ -2410,7 +2402,7 @@ def draw_nfet_06v0_nvt(
     sd_l = sd_l_con
 
     # gds components to store a single instance and the generated device
-    c = gf.Component("nfet_nvt_dev")
+    c = gf.Component()
 
     c_inst = gf.Component("dev_temp")
 
@@ -2966,10 +2958,4 @@ def draw_nfet_06v0_nvt(
     nat.xmin = dg.xmin
     nat.ymin = dg.ymin
 
-    # creating layout and cell in klayout
-
-    c.write_gds("nfet_nvt_temp.gds")
-    layout.read("nfet_nvt_temp.gds")
-    os.remove("nfet_nvt_temp.gds")
-
-    return layout.cell(c.name)
+    return c

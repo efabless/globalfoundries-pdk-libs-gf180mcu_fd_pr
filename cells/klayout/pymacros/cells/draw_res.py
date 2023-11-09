@@ -23,6 +23,7 @@ from .via_generator import via_generator, via_stack
 import os
 
 
+@gf.cell
 def draw_metal_res(
     layout,
     l_res: float = 0.1,
@@ -42,7 +43,7 @@ def draw_metal_res(
      w      : Float of diff width
     """
 
-    c = gf.Component("res_dev")
+    c = gf.Component()
 
     m_ext = 0.28
 
@@ -104,13 +105,7 @@ def draw_metal_res(
             layer=m_lbl_layer,
         )
 
-    # creating layout and cell in klayout
-
-    c.write_gds("res_temp.gds")
-    layout.read("res_temp.gds")
-    os.remove("res_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
 @gf.cell
@@ -401,6 +396,7 @@ def plus_res_inst(
     return c
 
 
+@gf.cell
 def draw_nplus_res(
     layout,
     l_res: float = 0.1,
@@ -415,7 +411,7 @@ def draw_nplus_res(
     sub_lbl: str = "",
 ) -> gf.Component:
 
-    c = gf.Component("res_dev")
+    c = gf.Component()
 
     lvpwell_enc_cmp = 0.43
     dn_enc_lvpwell = 2.5
@@ -474,13 +470,10 @@ def draw_nplus_res(
         if pcmpgr == 1:
             c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
 
-    c.write_gds("res_temp.gds")
-    layout.read("res_temp.gds")
-    os.remove("res_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
+@gf.cell
 def draw_pplus_res(
     layout,
     l_res: float = 0.1,
@@ -495,7 +488,7 @@ def draw_pplus_res(
     sub_lbl: str = "",
 ) -> gf.Component:
 
-    c = gf.Component("res_dev")
+    c = gf.Component()
 
     nw_enc_pcmp = 0.6
     dn_enc_ncmp = 0.66
@@ -558,11 +551,7 @@ def draw_pplus_res(
         nw_rect.xmin = r_inst.xmin - nw_enc_pcmp
         nw_rect.ymin = r_inst.ymin - nw_enc_pcmp
 
-    c.write_gds("res_temp.gds")
-    layout.read("res_temp.gds")
-    os.remove("res_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
 @gf.cell
@@ -703,6 +692,7 @@ def polyf_res_inst(
     return c
 
 
+@gf.cell
 def draw_npolyf_res(
     layout,
     l_res: float = 0.1,
@@ -716,7 +706,7 @@ def draw_npolyf_res(
     sub_lbl: str = "",
 ) -> gf.Component:
 
-    c = gf.Component("res_dev")
+    c = gf.Component()
 
     sub_w = 0.36
     sub_sp = 0.26 if deepnwell == 0 else 0.4
@@ -766,13 +756,10 @@ def draw_npolyf_res(
         if pcmpgr == 1:
             c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
 
-    c.write_gds("res_temp.gds")
-    layout.read("res_temp.gds")
-    os.remove("res_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
+@gf.cell
 def draw_ppolyf_res(
     layout,
     l_res: float = 0.1,
@@ -786,7 +773,7 @@ def draw_ppolyf_res(
     sub_lbl: str = "",
 ) -> gf.Component:
 
-    c = gf.Component("res_dev")
+    c = gf.Component()
 
     sub_w = 0.36
     dn_enc_ncmp = 0.66
@@ -841,13 +828,10 @@ def draw_ppolyf_res(
         if pcmpgr == 1:
             c.add_ref(pcmpgr_gen(dn_rect=dn_rect, grw=sub_w))
 
-    c.write_gds("res_temp.gds")
-    layout.read("res_temp.gds")
-    os.remove("res_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
+@gf.cell
 def draw_ppolyf_u_high_Rs_res(
     layout,
     l_res: float = 0.42,
@@ -861,7 +845,7 @@ def draw_ppolyf_u_high_Rs_res(
     sub_lbl: str = "",
 ) -> gf.Component:
 
-    c = gf.Component("res_dev")
+    c = gf.Component()
 
     dn_enc_ncmp = 0.62 if volt == "3.3V" else 0.66
     dn_enc_poly2 = 1.34
@@ -1054,13 +1038,10 @@ def draw_ppolyf_u_high_Rs_res(
             dg.xmin = resis_mk.xmin
             dg.ymin = resis_mk.ymin
 
-    c.write_gds("res_temp.gds")
-    layout.read("res_temp.gds")
-    os.remove("res_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
+@gf.cell
 def draw_well_res(
     layout,
     l_res: float = 0.42,
@@ -1073,7 +1054,7 @@ def draw_well_res(
     sub_lbl: str = "",
 ) -> gf.Component:
 
-    c = gf.Component("res_dev")
+    c = gf.Component()
 
     nw_res_ext = 0.48
     nw_res_enc = 0.5
@@ -1230,8 +1211,4 @@ def draw_well_res(
             layer=layer["metal1_label"],
         )
 
-    c.write_gds("res_temp.gds")
-    layout.read("res_temp.gds")
-    os.remove("res_temp.gds")
-
-    return layout.cell(c.name)
+    return c
