@@ -20,6 +20,8 @@ import pya
 import os
 from .draw_cap_mim import draw_cap_mim
 
+from .pcell_utilities import gf_to_pya
+
 mim_min_l = 5
 mim_min_w = 5
 mim_cap_area: float = (100 * 100)
@@ -98,7 +100,8 @@ class cap_mim(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
 
-        np_instance = draw_cap_mim(
+        instance = draw_cap_mim(
+            "mim_cap_dev",
             self.layout,
             lc=self.lc,
             wc=self.wc,
@@ -108,8 +111,12 @@ class cap_mim(pya.PCellDeclarationHelper):
             top_lbl=self.top_lbl,
             bot_lbl=self.bot_lbl,
         )
+
+        # creating layout and cell in klayout
+        instance = gf_to_pya(self.layout, instance, "mim_cap")
+        
         write_cells = pya.CellInstArray(
-            np_instance.cell_index(),
+            instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
             pya.Vector(0, 0),
             pya.Vector(0, 0),

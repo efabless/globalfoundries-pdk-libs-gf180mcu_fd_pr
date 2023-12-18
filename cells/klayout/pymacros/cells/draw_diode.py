@@ -25,6 +25,7 @@ import numpy as np
 import os
 
 
+@gf.cell
 def draw_diode_nd2ps(
     layout,
     la: float = 0.1,
@@ -51,7 +52,7 @@ def draw_diode_nd2ps(
      pcmpgr     : Boolean of using P+ Guard Ring for Deep NWELL devices only
     """
 
-    c = gf.Component("diode_nd2ps_dev")
+    c = gf.Component()
 
     comp_spacing: float = 0.48
     np_enc_comp: float = 0.16
@@ -359,15 +360,10 @@ def draw_diode_nd2ps(
 
         lvpwell.center = diode_mk.center
 
-    # creating layout and cell in klayout
-
-    c.write_gds("diode_nd2ps_temp.gds")
-    layout.read("diode_nd2ps_temp.gds")
-    os.remove("diode_nd2ps_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
+@gf.cell
 def draw_diode_pd2nw(
     layout,
     la: float = 0.1,
@@ -392,7 +388,7 @@ def draw_diode_pd2nw(
      pcmpgr     : Boolean of using P+ Guard Ring for Deep NWELL devices only
     """
 
-    c = gf.Component("diode_pd2nw_dev")
+    c = gf.Component()
 
     comp_spacing: float = 0.48
     np_enc_comp: float = 0.16
@@ -692,15 +688,10 @@ def draw_diode_pd2nw(
             dg.xmin = ncmp.xmin - dg_enc_cmp
             dg.ymin = ncmp.ymin - dg_enc_cmp
 
-    # creating layout and cell in klayout
-
-    c.write_gds("diode_pd2nw_temp.gds")
-    layout.read("diode_pd2nw_temp.gds")
-    os.remove("diode_pd2nw_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
+@gf.cell
 def draw_diode_nw2ps(
     layout,
     la: float = 0.1,
@@ -722,7 +713,7 @@ def draw_diode_nw2ps(
      volt       : String of operating voltage of the diode [3.3V, 5V/6V]
     """
 
-    c = gf.Component("diode_nw2ps_dev")
+    c = gf.Component()
 
     comp_spacing: float = 0.48
     np_enc_comp: float = 0.16
@@ -832,15 +823,10 @@ def draw_diode_nw2ps(
         dg.xmin = pcmp.xmin - dg_enc_cmp
         dg.ymin = pcmp.ymin - dg_enc_cmp
 
-    # creating layout and cell in klayout
-
-    c.write_gds("diode_nw2ps_temp.gds")
-    layout.read("diode_nw2ps_temp.gds")
-    os.remove("diode_nw2ps_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
+@gf.cell
 def draw_diode_pw2dw(
     layout,
     la: float = 0.1,
@@ -863,7 +849,7 @@ def draw_diode_pw2dw(
      volt       : String of operating voltage of the diode [3.3V, 5V/6V]
     """
 
-    c = gf.Component("diode_pw2dw_dev")
+    c = gf.Component()
 
     comp_spacing: float = 0.92
     np_enc_comp: float = 0.16
@@ -1270,13 +1256,10 @@ def draw_diode_pw2dw(
 
     # creating layout and cell in klayout
 
-    c.write_gds("diode_pw2dw_temp.gds")
-    layout.read("diode_pw2dw_temp.gds")
-    os.remove("diode_pw2dw_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
+@gf.cell
 def draw_diode_dw2ps(
     layout,
     la: float = 0.1,
@@ -1298,7 +1281,7 @@ def draw_diode_dw2ps(
      volt       : String of operating voltage of the diode [3.3V, 5V/6V]
     """
 
-    c = gf.Component("diode_dw2ps_dev")
+    c = gf.Component()
 
     if volt == "5/6V":
         dn_enc_ncmp = 0.66
@@ -1669,15 +1652,10 @@ def draw_diode_dw2ps(
         dg.xmin = dn_rect.xmin - dg_enc_dn
         dg.ymin = dn_rect.ymin - dg_enc_dn
 
-    # creating layout and cell in klayout
-
-    c.write_gds("diode_dw2ps_temp.gds")
-    layout.read("diode_dw2ps_temp.gds")
-    os.remove("diode_dw2ps_temp.gds")
-
-    return layout.cell(c.name)
+    return c
 
 
+@gf.cell
 def draw_sc_diode(
     layout,
     la: float = 0.1,
@@ -1700,7 +1678,7 @@ def draw_sc_diode(
      pcmpgr     : Boolean of using P+ Guard Ring for Deep NWELL devices only
     """
 
-    c = gf.Component("sc_diode_dev")
+    c = gf.Component()
 
     sc_enc_comp = 0.16
     sc_comp_spacing = 0.28
@@ -2064,10 +2042,4 @@ def draw_sc_diode(
             )
         )  # guardring metal1
 
-    # creating layout and cell in klayout
-
-    c.write_gds("sc_diode_temp.gds")
-    layout.read("sc_diode_temp.gds")
-    os.remove("sc_diode_temp.gds")
-
-    return layout.cell(c.name)
+    return c

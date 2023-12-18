@@ -19,6 +19,8 @@
 import pya
 from .draw_cap_mos import draw_cap_mos
 
+from .pcell_utilities import gf_to_pya
+
 cap_nmos_w = 1
 cap_nmos_l = 1
 
@@ -94,7 +96,8 @@ class cap_nmos(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        np_instance = draw_cap_mos(
+        instance = draw_cap_mos(
+            "cap_mos_dev",
             self.layout,
             type="cap_nmos",
             lc=self.lc,
@@ -106,8 +109,12 @@ class cap_nmos(pya.PCellDeclarationHelper):
             g_lbl=self.g_lbl,
             sd_lbl=self.sd_lbl,
         )
+
+        # creating layout and cell in klayout
+        instance = gf_to_pya(self.layout, instance, "cap_mos")
+
         write_cells = pya.CellInstArray(
-            np_instance.cell_index(),
+            instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
             pya.Vector(0, 0),
             pya.Vector(0, 0),
@@ -179,7 +186,8 @@ class cap_pmos(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        np_instance = draw_cap_mos(
+        instance = draw_cap_mos(
+            "cap_mos_dev",
             self.layout,
             type="cap_pmos",
             lc=self.lc,
@@ -191,8 +199,12 @@ class cap_pmos(pya.PCellDeclarationHelper):
             g_lbl=self.g_lbl,
             sd_lbl=self.sd_lbl,
         )
+        
+        # creating layout and cell in klayout
+        instance = gf_to_pya(self.layout, instance, "cap_mos")
+
         write_cells = pya.CellInstArray(
-            np_instance.cell_index(),
+            instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
             pya.Vector(0, 0),
             pya.Vector(0, 0),
@@ -262,7 +274,8 @@ class cap_nmos_b(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        np_instance = draw_cap_mos(
+        instance = draw_cap_mos(
+            "cap_mos_dev",
             self.layout,
             type="cap_nmos_b",
             lc=self.lc,
@@ -274,8 +287,12 @@ class cap_nmos_b(pya.PCellDeclarationHelper):
             g_lbl=self.g_lbl,
             sd_lbl=self.sd_lbl,
         )
+        
+        # creating layout and cell in klayout
+        instance = gf_to_pya(self.layout, instance, "cap_mos")
+
         write_cells = pya.CellInstArray(
-            np_instance.cell_index(),
+            instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
             pya.Vector(0, 0),
             pya.Vector(0, 0),
@@ -345,7 +362,8 @@ class cap_pmos_b(pya.PCellDeclarationHelper):
         return pya.Trans(self.shape.bbox().center())
 
     def produce_impl(self):
-        np_instance = draw_cap_mos(
+        instance = draw_cap_mos(
+            "cap_mos_dev",
             self.layout,
             type="cap_pmos_b",
             lc=self.lc,
@@ -357,8 +375,12 @@ class cap_pmos_b(pya.PCellDeclarationHelper):
             g_lbl=self.g_lbl,
             sd_lbl=self.sd_lbl,
         )
+        
+        # creating layout and cell in klayout
+        instance = gf_to_pya(self.layout, instance, "cap_mos")
+
         write_cells = pya.CellInstArray(
-            np_instance.cell_index(),
+            instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
             pya.Vector(0, 0),
             pya.Vector(0, 0),

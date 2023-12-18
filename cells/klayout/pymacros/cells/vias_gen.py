@@ -19,6 +19,8 @@
 import pya
 from .via_generator import draw_via_dev
 
+from .pcell_utilities import gf_to_pya
+
 via_size = 0.26
 via_enc = 0.07
 mt_min = 0.75
@@ -98,7 +100,8 @@ class via_dev(pya.PCellDeclarationHelper):
 
     def produce_impl(self):
 
-        via_instance = draw_via_dev(
+        instance = draw_via_dev(
+            "via_stack_dev",
             self.layout,
             x_max=self.x_max,
             y_max=self.y_max,
@@ -106,8 +109,11 @@ class via_dev(pya.PCellDeclarationHelper):
             base_layer=self.base_layer,
         )
 
+        # creating layout and cell in klayout
+        instance = gf_to_pya(self.layout, instance, "via_stack")
+
         write_cells = pya.CellInstArray(
-            via_instance.cell_index(),
+            instance.cell_index(),
             pya.Trans(pya.Point(0, 0)),
             pya.Vector(0, 0),
             pya.Vector(0, 0),
