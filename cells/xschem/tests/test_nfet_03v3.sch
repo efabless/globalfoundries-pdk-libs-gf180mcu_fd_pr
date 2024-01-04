@@ -1,4 +1,4 @@
-v {xschem version=3.0.0 file_version=1.2
+v {xschem version=3.4.5 file_version=1.2
 
 * Copyright 2022 GlobalFoundries PDK Authors
 *
@@ -32,43 +32,60 @@ x1=0
 x2=3.3
 divx=5
 subdivx=1
-node=i(vd)
-color=4
+node="i(vd)
+i(@m.xm1.m0[id])"
+color="4 4"
 
 unitx=1
 dataset=-1}
-N 50 -410 90 -410 {
+N 30 -230 70 -230 {
 lab=G}
-N 130 -490 130 -440 {
+N 110 -310 110 -260 {
 lab=D}
-N 130 -410 230 -410 {
+N 110 -230 210 -230 {
 lab=B}
-N 130 -380 130 -310 {
+N 110 -200 110 -130 {
 lab=S}
-C {devices/code_shown.sym} 20 -160 0 0 {name=MODELS only_toplevel=true
+C {devices/code_shown.sym} 10 -700 0 0 {name=MODELS only_toplevel=true
 format="tcleval( @value )"
 value="
 .include $::180MCU_MODELS/design.ngspice
 .lib $::180MCU_MODELS/sm141064.ngspice typical
 "}
-C {devices/lab_pin.sym} 50 -410 0 0 {name=l1 sig_type=std_logic lab=G}
-C {devices/lab_pin.sym} 130 -490 0 0 {name=l2 sig_type=std_logic lab=D}
-C {devices/lab_pin.sym} 130 -310 0 0 {name=l3 sig_type=std_logic lab=S}
-C {devices/lab_pin.sym} 230 -410 0 1 {name=l4 sig_type=std_logic lab=B}
-C {devices/code_shown.sym} 300 -450 0 0 {name=NGSPICE only_toplevel=true
+C {devices/lab_pin.sym} 30 -230 0 0 {name=l1 sig_type=std_logic lab=G}
+C {devices/lab_pin.sym} 110 -310 0 0 {name=l2 sig_type=std_logic lab=D}
+C {devices/lab_pin.sym} 110 -130 0 0 {name=l3 sig_type=std_logic lab=S}
+C {devices/lab_pin.sym} 210 -230 0 1 {name=l4 sig_type=std_logic lab=B}
+C {devices/code_shown.sym} 250 -590 0 0 {name=NGSPICE only_toplevel=true
 value="
-vg g 0 0
-vd d 0 0
+vg g 0 3.3
+vd d 0 0.5
 vs s 0 0
 vb b 0 0
+.save
++ @m.xm1.m0[gm]
++ @m.xm1.m0[gds]
++ @m.xm1.m0[cgs]
++ @m.xm1.m0[cgd]
++ @m.xm1.m0[csg]
++ @m.xm1.m0[cdg]
++ v(@m.xm1.m0[vth])
++ v(@m.xm1.m0[vdsat])
+
+.option savecurrents
 .control
 save all
+op
+remzerovec
+write test_nfet_03v3.raw
+set appendwrite
 dc vd 0 3.3 0.01 vg 0 3.3 0.3
+remzerovec
 write test_nfet_03v3.raw
 .endc
 "}
 C {devices/title.sym} 160 -30 0 0 {name=l5 author="GlobalFoundries PDK Authors"}
-C {symbols/nfet_03v3.sym} 110 -410 0 0 {name=M1
+C {symbols/nfet_03v3.sym} 90 -230 0 0 {name=M1
 L=0.28u
 W=0.22u
 nf=1
@@ -82,10 +99,30 @@ sa=0 sb=0 sd=0
 model=nfet_03v3
 spiceprefix=X
 }
-C {devices/launcher.sym} 185 -635 0 0 {name=h1
+C {devices/launcher.sym} 635 -575 0 0 {name=h1
 descr="Click left mouse button here with control key
 pressed to load/unload waveforms in graph."
 tclcommand="
-xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]]].raw
+xschem raw_read $netlist_dir/[file tail [file rootname [xschem get current_name]]].raw dc
 "
 }
+C {devices/ngspice_get_value.sym} 30 -460 0 0 {name=r1 node=@m.xm1.m0[gm]
+descr="gm="}
+C {devices/ngspice_get_value.sym} 30 -420 0 0 {name=r2 node=@m.xm1.m0[gds]
+descr="gds="}
+C {devices/launcher.sym} 90 -90 0 0 {name=h5
+descr="Annotate OP" 
+tclcommand="xschem annotate_op"
+}
+C {devices/ngspice_get_value.sym} 30 -380 0 0 {name=r3 node=v(@m.xm1.m0[vdsat])
+descr="vdsat="}
+C {devices/ngspice_get_value.sym} 30 -340 0 0 {name=r4 node=v(@m.xm1.m0[vth])
+descr="vth="}
+C {devices/ngspice_get_value.sym} 130 -460 0 0 {name=r5 node=@m.xm1.m0[cgs]
+descr="cgs="}
+C {devices/ngspice_get_value.sym} 130 -430 0 0 {name=r6 node=@m.xm1.m0[cgd]
+descr="cgd="}
+C {devices/ngspice_get_value.sym} 130 -390 0 0 {name=r7 node=@m.xm1.m0[csg]
+descr="csg="}
+C {devices/ngspice_get_value.sym} 130 -360 0 0 {name=r8 node=@m.xm1.m0[cdg]
+descr="cdg="}
