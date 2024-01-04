@@ -85,6 +85,7 @@
 *      rm1                 Subcircuit Model for 2-terminal metal 1 resistor
 *      rm2                 Subcircuit Model for 2-terminal metal 2 resistor
 *      rm3                 Subcircuit Model for 2-terminal metal 3 resistor
+*      rm4                 Subcircuit Model for 2-terminal metal 4 resistor
 *      tm6k                Subcircuit Model for 2-terminal top metal 6k resistor
 *      tm9k                Subcircuit Model for 2-terminal top metal 9k resistor
 *      tm11k               Subcircuit Model for 2-terminal top metal 11k resistor
@@ -8191,6 +8192,7 @@ Rb 1 2
 *    rm1                Model for 2-terminal metal 1 resistor
 *    rm2                Model for 2-terminal metal 2 resistor
 *    rm3                Model for 2-terminal metal 3 resistor
+*    rm4                Model for 2-terminal metal 4 resistor
 *    tm6k               Model for 2-terminal top metal 6k resistor
 *    tm9k               Model for 2-terminal top metal 9k resistor
 *    tm30k              Model for 2-terminal top metal 30k resistor
@@ -8700,6 +8702,21 @@ Rb 1 2
 + R='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2))/r_n/r_n)'
 *-------------------
 .ENDS rm3
+*******************************************************************************************************
+* model for metal 4 resistor
+.SUBCKT rm4 1 2
++ PARAMS: R_LENGTH={l} R_WIDTH={w} DTEMP=0 PAR=1 S=1 R_RSH0={rsh_rm4} R_DW=0 R_DL=0
++ R_VC1=0 R_VC2=0 R_TC1=3.33E-3 R_TC2=0 R_TNOM=25 R_L='s*(r_length-2*r_dl)' R_W='r_width-2*r_dw'
++ R_N='r_l/r_w' R_TEMP='1+r_tc1*(temp+dtemp-r_tnom)+r_tc2*(temp+dtemp-r_tnom)*(temp+dtemp-r_tnom)'
+*-------------------
+* body resistor parameters
+*-------------------
+
+* body
+Rb 1 2
++ R='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2))/r_n/r_n)'
+*-------------------
+.ENDS rm4
 ***************************************************************************************
 * model for top metal 6k resistor
 .SUBCKT tm6k 1 2

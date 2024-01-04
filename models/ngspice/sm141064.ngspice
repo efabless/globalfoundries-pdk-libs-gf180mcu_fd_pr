@@ -80,6 +80,7 @@
 *      rm1                 Subcircuit Model for 2-terminal metal 1 resistor
 *      rm2                 Subcircuit Model for 2-terminal metal 2 resistor
 *      rm3                 Subcircuit Model for 2-terminal metal 3 resistor
+*      rm4                 Subcircuit Model for 2-terminal metal 4 resistor
 *      tm6k                Subcircuit Model for 2-terminal top metal 6k resistor
 *      tm9k                Subcircuit Model for 2-terminal top metal 9k resistor
 *      tm11k               Subcircuit Model for 2-terminal top metal 11k resistor
@@ -409,6 +410,7 @@
 +rsh_rm1=0.09
 +rsh_rm2=0.09
 +rsh_rm3=0.09
++rsh_rm4=0.09
 +rsh_tm6k=60e-3
 +rsh_tm9k=40e-3
 +rsh_tm11k=40e-3
@@ -439,6 +441,7 @@
 +rsh_rm1='0.09+0.012'
 +rsh_rm2='0.09+0.012'
 +rsh_rm3='0.09+0.012'
++rsh_rm4='0.09+0.012'
 +rsh_tm6k='60e-3 + 10e-3'
 +rsh_tm9k='40e-3 + 9e-3'
 +rsh_tm11k='40e-3 + 9e-3'
@@ -469,6 +472,7 @@
 +rsh_rm1='0.09-0.012'
 +rsh_rm2='0.09-0.012'
 +rsh_rm3='0.09-0.012'
++rsh_rm4='0.09-0.012'
 +rsh_tm6k='60e-3 - 10e-3'
 +rsh_tm9k='40e-3 - 9e-3'
 +rsh_tm11k='40e-3 - 9e-3'
@@ -38278,6 +38282,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 *    rm1                Model for 2-terminal metal 1 resistor
 *    rm2                Model for 2-terminal metal 2 resistor
 *    rm3                Model for 2-terminal metal 3 resistor
+*    rm4                Model for 2-terminal metal 4 resistor
 *    tm6k               Model for 2-terminal top metal 6k resistor
 *    tm9k               Model for 2-terminal top metal 9k resistor
 *    tm30k              Model for 2-terminal top metal 30k resistor
@@ -39040,6 +39045,28 @@ rb 1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2))
 rb 1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2))/r_n/r_n)'
 *-------------------
 .ends rm3
+*******************************************************************************************************
+* model for metal 4 resistor
+.subckt rm4 1 2 r_length=l r_width=w dtemp=0 par=1 s=1
+*-------------------
+* body resistor parameters
++ r_rsh0=rsh_rm4
++ r_dw=0
++ r_dl=0
++ r_vc1=0
++ r_vc2=0
++ r_tc1=3.33E-3
++ r_tc2=0
++ r_tnom=25
++ r_l='s*(r_length-2*r_dl)'
++ r_w='r_width-2*r_dw'
++ r_n='r_l/r_w'
++ r_temp='1+r_tc1*(temper+dtemp-r_tnom)+r_tc2*(temper+dtemp-r_tnom)*(temper+dtemp-r_tnom)'
+*-------------------
+* body
+rb 1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2))/r_n/r_n)'
+*-------------------
+.ends rm4
 ***************************************************************************************
 * model for top metal 6k resistor
 .subckt tm6k 1 2 r_length=l r_width=w dtemp=0 par=1 s=1
