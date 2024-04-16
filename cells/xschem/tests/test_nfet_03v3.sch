@@ -126,3 +126,7 @@ C {devices/ngspice_get_value.sym} 130 -390 0 0 {name=r7 node=@m.xm1.m0[csg]
 descr="csg="}
 C {devices/ngspice_get_value.sym} 130 -360 0 0 {name=r8 node=@m.xm1.m0[cdg]
 descr="cdg="}
+C {devices/noconn.sym} 110 -280 0 0 {name=l6}
+C {devices/noconn.sym} 110 -180 0 0 {name=l7}
+C {devices/noconn.sym} 50 -230 3 0 {name=l8}
+C {devices/noconn.sym} 170 -230 3 0 {name=l9}

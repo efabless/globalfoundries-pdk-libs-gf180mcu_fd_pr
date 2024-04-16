@@ -99,3 +99,4 @@ L=1e-6
 model=ppolyf_u_1k_6p0
 spiceprefix=X
 m=1}
+C {devices/noconn.sym} 90 -410 3 0 {name=l1}

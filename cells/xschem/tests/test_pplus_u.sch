@@ -1,4 +1,4 @@
-v {xschem version=3.0.0 file_version=1.2
+v {xschem version=3.4.5 file_version=1.2
 
 * Copyright 2022 GlobalFoundries PDK Authors
 *
@@ -99,3 +99,4 @@ L=5e-6
 model=pplus_u
 spiceprefix=X
 m=1}
+C {devices/noconn.sym} 90 -410 3 0 {name=l1}

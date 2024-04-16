@@ -1,4 +1,4 @@
-v {xschem version=3.0.0 file_version=1.2
+v {xschem version=3.4.5 file_version=1.2
 
 * Copyright 2022 GlobalFoundries PDK Authors
 *
@@ -89,3 +89,7 @@ value="
 .include $::180MCU_MODELS/design.ngspice
 .lib $::180MCU_MODELS/sm141064.ngspice typical
 "}
+C {devices/noconn.sym} 130 -460 0 0 {name=l6}
+C {devices/noconn.sym} 130 -360 0 0 {name=l7}
+C {devices/noconn.sym} 70 -410 3 0 {name=l8}
+C {devices/noconn.sym} 190 -410 3 0 {name=l9}
