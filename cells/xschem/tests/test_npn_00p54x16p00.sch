@@ -102,3 +102,4 @@ m=1}
 C {devices/gnd.sym} 210 -300 0 0 {name=l1 lab=GND}
 C {devices/lab_pin.sym} 130 -390 0 0 {name=l2 sig_type=std_logic lab=B}
 C {devices/lab_pin.sym} 210 -460 0 0 {name=l3 sig_type=std_logic lab=C}
+C {devices/noconn.sym} 150 -390 3 0 {name=l4}
