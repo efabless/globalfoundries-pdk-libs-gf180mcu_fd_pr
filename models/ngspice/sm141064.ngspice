@@ -12,6 +12,12 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 
+* 20240418 Minor edits done by Hesham Omran
+* 1- Renamed subcircuits to avoid reusing the model name so that the model file is usable with spectre
+* 2- Used multi instead of m to avoid wrong Monte Carlo sim results as explained here:
+* https://www.linkedin.com/pulse/why-using-device-multiplier-can-make-your-monte-carlo-hesham-omran/
+* Note: The multi fix is currently applied to transistors only
+
 *******************************************************************************
 * Document No.      : YI-141-SM064
 * Revision          : 9
@@ -32,15 +38,15 @@
 *
 *      ModelName          Description
 *      ---------          -----------
-*      nfet_03v3           Subcircuit model for 3.3V NMOS
-*      pfet_03v3           Subcircuit model for 3.3V PMOS
-*      nfet_06v0           Subcircuit model for 6.0V NMOS
-*      pfet_06v0           Subcircuit model for 6.0V PMOS
-*      nfet_03v3_dss       Subcircuit model for 3.3V NMOS with Drain side SAB
-*      pfet_03v3_dss       Subcircuit model for 3.3V PMOS with Drain side SAB
-*      nfet_06v0_dss       Subcircuit model for 6.0V NMOS with Drain side SAB
-*      pfet_06v0_dss       Subcircuit model for 6.0V PMOS with Drain side SAB
-*      nfet_06v0_nvt       Subcircuit model for 6.0V native NMOS
+*      nmos_03v3           Subcircuit model for 3.3V NMOS
+*      pmos_03v3           Subcircuit model for 3.3V PMOS
+*      nmos_06v0           Subcircuit model for 6.0V NMOS
+*      pmos_06v0           Subcircuit model for 6.0V PMOS
+*      nmos_03v3_dss       Subcircuit model for 3.3V NMOS with Drain side SAB
+*      pmos_03v3_dss       Subcircuit model for 3.3V PMOS with Drain side SAB
+*      nmos_06v0_dss       Subcircuit model for 6.0V NMOS with Drain side SAB
+*      pmos_06v0_dss       Subcircuit model for 6.0V PMOS with Drain side SAB
+*      nmos_06v0_nvt       Subcircuit model for 6.0V native NMOS
 *
 *      diode_nd2ps_03v3    Model for 3.3V N+/Psub diode
 *      diode_pd2nw_03v3    Model for 3.3V P+/Nwell diode
@@ -742,7 +748,7 @@
 .lib nfet_03v3_t
 
 
-.subckt nfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt nmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.007148  
@@ -751,7 +757,7 @@
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -765,7 +771,7 @@ xr1 d d1 b nplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab'
 xr2 s s1 b nplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
 
 
-m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -4393,7 +4399,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 .lib nfet_03v3_f
 
 
-.subckt nfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt nmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.007148  
@@ -4402,7 +4408,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -4413,7 +4419,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + mis_vth=agauss(0,var_vth,1)
 xr1 d d1 b nplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b nplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -8041,7 +8047,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 .lib nfet_03v3_s
 
 
-.subckt nfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt nmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.007148  
@@ -8050,7 +8056,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -8062,7 +8068,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 xr1 d d1 b nplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b nplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -11690,7 +11696,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 
 
-.subckt nfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt nmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.007148  
@@ -11699,7 +11705,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -11711,7 +11717,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 xr1 d d1 b nplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b nplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -15343,7 +15349,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 
 
-.subckt nfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt nmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.007148  
@@ -15352,7 +15358,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -15364,7 +15370,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 xr1 d d1 b nplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b nplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -18996,7 +19002,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 .lib pfet_03v3_t
 
 
-.subckt pfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt pmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.00666  
@@ -19005,7 +19011,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -19017,7 +19023,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 xr1 d d1 b pplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b pplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b pfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b pfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -22697,7 +22703,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 .lib pfet_03v3_f
 
 
-.subckt pfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt pmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.00666  
@@ -22706,7 +22712,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -22718,7 +22724,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 xr1 d d1 b pplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b pplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b pfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b pfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -26399,7 +26405,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 .lib pfet_03v3_s
 
 
-.subckt pfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt pmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.00666  
@@ -26408,7 +26414,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -26420,7 +26426,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 xr1 d d1 b pplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b pplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b pfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b pfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -30099,7 +30105,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 .lib pfet_03v3_fs
 
 
-.subckt pfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt pmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.00666  
@@ -30108,7 +30114,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -30120,7 +30126,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 xr1 d d1 b pplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b pplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b pfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b pfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -33797,7 +33803,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 *
 .lib pfet_03v3_sf
 
-.subckt pfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt pmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.00666  
@@ -33806,7 +33812,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -33818,7 +33824,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 xr1 d d1 b pplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b pplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b pfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b pfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -37502,7 +37508,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 .lib nfet_06v0_t
 
 
-.subckt nfet_06v0_dss d g s b w=10u l=0.6u par=1 s_sab=0.28u d_sab=3.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt nmos_06v0_dss d g s b w=10u l=0.6u par=1 s_sab=0.28u d_sab=3.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.01155  
@@ -37511,7 +37517,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-5e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -37523,7 +37529,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 
 xr1 d d1 b nplus_u_m2 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b nplus_u_m2 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b nfet_06v0 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=0 sb=0 sd=0 m=m
+m0 d1 g s1 b nfet_06v0 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=0 sb=0 sd=0 m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -37764,11 +37770,11 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 ***************************************************************************************************
 *
 .lib nfet_06v0_nvt_t
-.subckt nfet_06v0_nvt d g s b w=1e-5 l=1.8e-6 as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 par=1 dtemp=0 sa=0 sb=0 nf=1 sd=0 m=1
+.subckt nmos_06v0_nvt d g s b w=1e-5 l=1.8e-6 as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 par=1 dtemp=0 sa=0 sb=0 nf=1 sd=0 multi=1
 
-m0 d g s b nfet_06v0_nvt w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs sa=sa sb=sb nf=nf sd=sd m=m
+m0 d g s b nfet_06v0_nvt w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs sa=sa sb=sb nf=nf sd=sd m=multi
 
-.ends nfet_06v0_nvt
+.ends nmos_06v0_nvt
 
 .model  nfet_06v0_nvt.0  nmos
 +level = 54
@@ -37920,7 +37926,7 @@ m0 d g s b nfet_06v0_nvt w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs sa=sa s
 .lib pfet_06v0_t
 
 
-.subckt pfet_06v0_dss d g s b w=10u l=0.5u par=1 s_sab=0.28u d_sab=2.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt pmos_06v0_dss d g s b w=10u l=0.5u par=1 s_sab=0.28u d_sab=2.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.01051 
@@ -37929,7 +37935,7 @@ m0 d g s b nfet_06v0_nvt w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs sa=sa s
 + par_w=-4e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -37941,7 +37947,7 @@ m0 d g s b nfet_06v0_nvt w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs sa=sa s
 
 xr1 d d1 b pplus_u_m2 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b pplus_u_m2 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b pfet_06v0 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=0 sb=0 sd=0 m=m
+m0 d1 g s1 b pfet_06v0 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=0 sb=0 sd=0 m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -38237,7 +38243,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 +xti     = 3               xtitun  = -12.347         cta     = 6.2962e-005     ctp     = 0
 +tpb     = 0.0002696       tphp    = 0               eg      = 0.61
 *
-.endl diode
+.endl dio
 *
 *******************************************************************************************************
 *                Resistor Models
@@ -39333,7 +39339,7 @@ c_moscap 1 2 c='cap_pmos_06v0_b_corner*c_length*c_width*(cvar1+cvar2*tanh(cvar3*
 .lib nfet_03v3_stat
 
 
-.subckt nfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt nmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.007148  
@@ -39342,7 +39348,7 @@ c_moscap 1 2 c='cap_pmos_06v0_b_corner*c_length*c_width*(cvar1+cvar2*tanh(cvar3*
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -39353,7 +39359,7 @@ c_moscap 1 2 c='cap_pmos_06v0_b_corner*c_length*c_width*(cvar1+cvar2*tanh(cvar3*
 + mis_vth=agauss(0,var_vth,1)
 xr1 d d1 b nplus_u_m1 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b nplus_u_m1 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=m
+m0 d1 g s1 b nfet_03v3 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=sa sb=sb sd=sd m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -42985,7 +42991,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 .lib pfet_03v3_stat
 
 
-.subckt pfet_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt pmos_03v3_dss d g s b w=10u l=0.28u par=1 s_sab=0.48u d_sab=1.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.00666  
@@ -42994,7 +43000,7 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -46687,9 +46693,9 @@ rb  1 2 r='r_temp*r_n*(r_rsh0+r_vc1*abs(v(1,2))/r_n+r_vc2*abs(v(1,2))*abs(v(1,2)
 .lib nfet_06v0_nvt_stat
 
 *.lib nfet_06v0_nvt_t
-.subckt nfet_06v0_nvt d g s b w=1e-5 l=1.8e-6 as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 par=1 dtemp=0 sa=0 sb=0 nf=1 sd=0 m=1
+.subckt nfet_06v0_nvt d g s b w=1e-5 l=1.8e-6 as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 par=1 dtemp=0 sa=0 sb=0 nf=1 sd=0 multi=1
 
-m0 d g s b nfet_06v0_nvt w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs sa=sa sb=sb nf=nf sd=sd m=m
+m0 d g s b nfet_06v0_nvt w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs sa=sa sb=sb nf=nf sd=sd m=multi
 
 .ends nfet_06v0_nvt
 
@@ -46843,7 +46849,7 @@ m0 d g s b nfet_06v0_nvt w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs sa=sa s
 .lib pfet_06v0_stat
 
 
-.subckt pfet_06v0_dss d g s b w=10u l=0.5u par=1 s_sab=0.28u d_sab=2.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 m=1
+.subckt pmos_06v0_dss d g s b w=10u l=0.5u par=1 s_sab=0.28u d_sab=2.78u as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 dtemp=0 nf=1 sa=0 sb=0 sd=0 multi=1
 
 .param
 + par_vth=0.01051 
@@ -46852,7 +46858,7 @@ m0 d g s b nfet_06v0_nvt w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs sa=sa s
 + par_w=-4e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -46864,7 +46870,7 @@ m0 d g s b nfet_06v0_nvt w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs sa=sa s
 
 xr1 d d1 b pplus_u_m2 wr='w' lr='(d_sab==0) ? 1e-15 : d_sab' 
 xr2 s s1 b pplus_u_m2 wr='w' lr='(s_sab==0) ? 1e-15 : s_sab' 
-m0 d1 g s1 b pfet_06v0 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=0 sb=0 sd=0 m=m
+m0 d1 g s1 b pfet_06v0 w='w' l='l' as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs nf=nf sa=0 sb=0 sd=0 m=multi
 +delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch'
 .ends
 
@@ -47039,9 +47045,9 @@ rfuse  in out  r='200*(1-pblow) + 900*pblow'
 .ENDL efuse
 
 .lib fets_mm
-.subckt nfet_03v3 d g s b w=1e-5 l=2.8e-7
+.subckt nmos_03v3 d g s b w=1e-5 l=2.8e-7
 + as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 par=1 dtemp=0
-+ sa=0 sb=0 nf=1 sd=0 m=1
++ sa=0 sb=0 nf=1 sd=0 multi=1
 
 .param
 + par_vth=0.007148  
@@ -47050,7 +47056,7 @@ rfuse  in out  r='200*(1-pblow) + 900*pblow'
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -47061,12 +47067,12 @@ rfuse  in out  r='200*(1-pblow) + 900*pblow'
 + mis_vth=agauss(0,var_vth,1)
 
 m0 d g s b nfet_03v3 w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs 
-+delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch' sa=sa sb=sb nf=nf sd=sd m=m
-.ends nfet_03v3
++delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch' sa=sa sb=sb nf=nf sd=sd m=multi
+.ends nmos_03v3
 *------------------------------------------------------------------------
-.subckt pfet_03v3 d g s b w=1e-5 l=2.8e-7
+.subckt pmos_03v3 d g s b w=1e-5 l=2.8e-7
 + as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 par=1 dtemp=0
-+ sa=0 sb=0 nf=1 sd=0 m=1
++ sa=0 sb=0 nf=1 sd=0 multi=1
 
 .param
 + par_vth=0.00666  
@@ -47075,7 +47081,7 @@ m0 d g s b nfet_03v3 w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs
 + par_w=-1e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -47086,12 +47092,12 @@ m0 d g s b nfet_03v3 w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs
 + mis_vth=agauss(0,var_vth,1)
 
 m0 d g s b pfet_03v3 w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs 
-+delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch' sa=sa sb=sb nf=nf sd=sd m=m
-.ends pfet_03v3
++delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch' sa=sa sb=sb nf=nf sd=sd m=multi
+.ends pmos_03v3
 *------------------------------------------------------------------------
-.subckt nfet_06v0 d g s b w=1e-5 l=7e-7
+.subckt nmos_06v0 d g s b w=1e-5 l=7e-7
 + as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 par=1 dtemp=0
-+ sa=0 sb=0 nf=1 sd=0 m=1
++ sa=0 sb=0 nf=1 sd=0 multi=1
 
 .param
 + par_vth=0.01155  
@@ -47100,7 +47106,7 @@ m0 d g s b pfet_03v3 w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs
 + par_w=-5e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -47111,12 +47117,12 @@ m0 d g s b pfet_03v3 w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs
 + mis_vth=agauss(0,var_vth,1)
 
 m0 d g s b nfet_06v0 w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs 
-+delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch' sa=sa sb=sb nf=nf sd=sd m=m
-.ends nfet_06v0
++delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch' sa=sa sb=sb nf=nf sd=sd m=multi
+.ends nmos_06v0
 *------------------------------------------------------------------------
-.subckt pfet_06v0 d g s b w=1e-5 l=5e-7
+.subckt pmos_06v0 d g s b w=1e-5 l=5e-7
 + as=0 ad=0 ps=0 pd=0 nrd=0 nrs=0 par=1 dtemp=0
-+ sa=0 sb=0 nf=1 sd=0 m=1
++ sa=0 sb=0 nf=1 sd=0 multi=1
 
 .param
 + par_vth=0.01051 
@@ -47125,7 +47131,7 @@ m0 d g s b nfet_06v0 w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs
 + par_w=-4e-7
 + par_leff='l-par_l'
 + par_weff='par*(w-par_w)'
-+ p_sqrtarea='sqrt((par_leff)*(par_weff))'
++ p_sqrtarea='sqrt((par_leff)*(par_weff)*(multi))'
 
 .param
 + var_k='0.7071*par_k* 1e-06 / p_sqrtarea'
@@ -47136,8 +47142,8 @@ m0 d g s b nfet_06v0 w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs
 + mis_vth=agauss(0,var_vth,1)
 
 m0 d g s b pfet_06v0 w=w l=l as=as ad=ad ps=ps pd=pd nrd=nrd nrs=nrs 
-+delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch' sa=sa sb=sb nf=nf sd=sd m=m
-.ends pfet_06v0
++delvto='mis_vth*sw_stat_mismatch' mulu0='1-mis_k*sw_stat_mismatch' sa=sa sb=sb nf=nf sd=sd m=multi
+.ends pmos_06v0
 *------------------------------------------------------------------------
 
 .endl fets_mm
